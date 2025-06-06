@@ -19,7 +19,7 @@ services:
     build:
       context: ./apps/app2
     ports:
-      - "3000:3000"
+      - "3001:3000"
     environment:
       - LOGSTASH_HOST=logstash-app2
     healthcheck:
@@ -35,7 +35,7 @@ services:
     ports:
       - "9090:9090"
     volumes:
-            - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
     restart: unless-stopped
@@ -46,7 +46,7 @@ services:
       - "3000:3000"
     volumes:
       - grafana-storage:/var/lib/grafana
-      - F:/ArtificalIntelligence/DevOps-MCP-Server/monitoring/grafana/provisioning:/etc/grafana/provisioning
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD}
     depends_on:
@@ -82,7 +82,7 @@ services:
   logstash-app1:
     image: docker.elastic.co/logstash/logstash:7.14.0
     volumes:
-      - F:/ArtificalIntelligence/DevOps-MCP-Server/monitoring/logstash/app1/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+      - ./monitoring/logstash/app1/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
     ports:
       - "5001:5001"
     environment:
@@ -95,7 +95,7 @@ services:
   logstash-app2:
     image: docker.elastic.co/logstash/logstash:7.14.0
     volumes:
-      - F:/ArtificalIntelligence/DevOps-MCP-Server/monitoring/logstash/app2/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+      - ./monitoring/logstash/app2/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
     ports:
       - "5002:5002"
     environment:

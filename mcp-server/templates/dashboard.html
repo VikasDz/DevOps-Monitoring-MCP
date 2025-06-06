@@ -1,0 +1,23 @@
+<!-- templates/dashboard.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MCP Dashboard</title>
+</head>
+<body>
+    <h1>MCP Dashboard</h1>
+    <h2>Applications</h2>
+    <ul>
+        {% for app in applications %}
+            <li>{{ app.name }} - {{ app.status }}</li>
+        {% endfor %}
+    </ul>
+    <h2>Incidents</h2>
+    <ul>
+        {% for incident in incidents %}
+            <li>{{ incident.message }} ({{ incident.severity }})</li>
+        {% endfor %}
+    </ul>
+    <p>LLM Enabled: {{ llm_enabled }}</p>
+</body>
+</html>

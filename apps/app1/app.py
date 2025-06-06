@@ -3,6 +3,7 @@ import random
 import time
 import logging
 from pythonjsonlogger import jsonlogger
+from prometheus_client import make_wsgi_app, Counter, start_http_server
 
 app = Flask(__name__)
 
@@ -18,6 +19,19 @@ logger.setLevel(logging.INFO)
 def healthy():
     logger.info("Health check OK", extra={"app": "app1", "type": "healthcheck"})
     return "App1 Running OK"
+
+
+# Add these lines after Flask app creation
+REQUEST_COUNT = Counter(
+    'app1_request_count',
+    'Application Request Count',
+    ['method', 'endpoint', 'http_status']
+)
+
+@app.route('/metrics')
+def metrics():
+    return make_wsgi_app()
+
 
 @app.route('/error')
 def error_endpoint():

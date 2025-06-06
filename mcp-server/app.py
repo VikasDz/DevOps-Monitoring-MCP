@@ -215,13 +215,14 @@ class MCPServer:
         def dashboard():
             status = {
                 "applications": [
-                    {"name": "app1", "status": self.get_app_status("app1")},
-                    {"name": "app2", "status": self.get_app_status("app2")}
+                    {"name": "app1", "status": self.get_app_status("devops-mcp-server-app1-1")},
+                    {"name": "app2", "status": self.get_app_status("devops-mcp-server-app2-1")}
                 ],
                 "incidents": self.incidents[-5:][::-1],
                 "llm_enabled": bool(self.deepseek_api_key)
             }
             return render_template('dashboard.html', **status)
+
         
         app.run(host='0.0.0.0', port=8000)
     
