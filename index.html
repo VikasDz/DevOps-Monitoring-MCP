@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Auto-Remediation Monitoring & Control Platform</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet"/>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f5f7fa;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+    header {
+      background-color: #0f172a;
+      color: white;
+      padding: 2rem;
+      text-align: center;
+    }
+    header img {
+      max-height: 80px;
+      margin-bottom: 1rem;
+    }
+    main {
+      max-width: 960px;
+      margin: auto;
+      padding: 2rem;
+    }
+    section {
+      margin-bottom: 2rem;
+    }
+    h2 {
+      color: #1e293b;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 0.5rem;
+    }
+    pre {
+      background-color: #e2e8f0;
+      padding: 1rem;
+      border-radius: 6px;
+      overflow-x: auto;
+    }
+    code {
+      font-family: monospace;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+    th, td {
+      border: 1px solid #cbd5e1;
+      padding: 0.75rem;
+      text-align: left;
+    }
+    th {
+      background-color: #f1f5f9;
+    }
+    footer {
+      background-color: #0f172a;
+      color: white;
+      text-align: center;
+      padding: 1rem;
+      margin-top: 2rem;
+    }
+    .code-title {
+      font-weight: 600;
+      margin-top: 1rem;
+      margin-bottom: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="https://cdn-icons-png.flaticon.com/512/2769/2769339.png" alt="MCP Logo"/>
+    <h1>Auto-Remediation Monitoring & Control Platform</h1>
+    <p>Real-time monitoring, AI diagnosis, automated recovery</p>
+  </header>
+  <main>
+    <section>
+      <h2>🚀 Features</h2>
+      <ul>
+        <li>Real-time container monitoring</li>
+        <li>AI-powered incident diagnosis</li>
+        <li>Automated remediation workflows</li>
+        <li>Isolated logging pipelines</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>📦 Prerequisites</h2>
+      <pre><code># Required Tools
+- Docker Desktop 4.15+
+- Python 3.9+
+- Node.js 14.x (for App2)
+</code></pre>
+    </section>
+
+    <section>
+      <h2>🛠️ Installation</h2>
+      <pre><code>git clone https://github.com/VikasDz/DevOps-Monitoring-MCP.git
+cd DevOps-Monitoring-MCP
+cp .env.example .env
+nano .env  # Add your DeepSeek API key
+docker-compose up -d --build
+</code></pre>
+    </section>
+
+    <section>
+      <h2>🌐 Service Endpoints</h2>
+      <table>
+        <tr><th>Service</th><th>URL</th><th>Credentials</th></tr>
+        <tr><td>Grafana</td><td>http://localhost:3000</td><td>admin:grafana</td></tr>
+        <tr><td>Prometheus</td><td>http://localhost:9090</td><td>-</td></tr>
+        <tr><td>Kibana</td><td>http://localhost:5601</td><td>-</td></tr>
+        <tr><td>MCP Dashboard</td><td>http://localhost:8000</td><td>-</td></tr>
+      </table>
+    </section>
+
+    <section>
+      <h2>🐳 Docker Commands Cheatsheet</h2>
+      <pre><code>docker-compose ps
+docker-compose logs -f mcp
+docker-compose up -d --force-recreate
+docker-compose down -v && docker system prune -a
+</code></pre>
+    </section>
+
+    <section>
+      <h2>📝 Sample prometheus.yml</h2>
+      <pre><code>global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: 'app1'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['app1:5000']
+  
+  - job_name: 'app2'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['app2:3000']
+</code></pre>
+    </section>
+
+    <section>
+      <h2>🤖 Testing Auto-Remediation</h2>
+      <pre><code>import requests
+for _ in range(5):
+    requests.get('http://localhost:5000/error')
+
+docker-compose logs mcp | grep "Attempting remediation"
+</code></pre>
+    </section>
+
+    <section>
+      <h2>🗂️ Project Structure</h2>
+      <pre><code>ARM-CP/
+├── apps/
+│   ├── app1/               # Flask app
+│   └── app2/               # Node.js app
+├── monitoring/
+│   ├── prometheus.yml
+│   ├── grafana/
+│   └── logstash/
+├── mcp-server/             # Control plane
+└── docker-compose.yml
+</code></pre>
+    </section>
+
+    <section>
+      <h2>💡 How the AI Integration Works</h2>
+      <pre><code>def analyze_incident(self, error_log):
+    prompt = f"""
+    Analyze this Docker container error:
+    {error_log}
+    
+    Suggest remediation steps in JSON format with:
+    - root_cause
+    - steps[]
+    - confidence_score
+    """
+    
+    response = requests.post(
+        self.deepseek_url,
+        headers={"Authorization": f"Bearer {self.api_key}"},
+        json={"model": "deepseek-chat", "messages": [{"role": "user", "content": prompt}]}
+    )
+    return response.json()
+</code></pre>
+    </section>
+
+    <section>
+      <h2>🆘 Support</h2>
+      <ol>
+        <li>Check container logs:
+          <pre><code>docker-compose logs --tail=100</code></pre>
+        </li>
+        <li>Open a GitHub Issue</li>
+        <li>Include your <code>docker-compose version</code> output</li>
+      </ol>
+    </section>
+  </main>
+  <footer>
+    &copy; 2025 Auto-Remediation MCP. Built with ❤️ for DevOps.
+  </footer>
+</body>
+</html>
