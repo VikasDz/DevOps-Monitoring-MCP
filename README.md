@@ -17,8 +17,8 @@
 ## 🛠️ Installation
 ```bash
 # Clone the repository
-git clone https://github.com/VikasDz/DevOps-mcp-Server.git
-cd ARM-CP
+git clone https://github.com/VikasDz/DevOps-Monitoring-MCP.git
+cd DevOps-Monitoring-MCP
 
 # Set up environment
 cp .env.example .env
@@ -103,7 +103,7 @@ ARM-CP/
 
 ## 💡 How the AI Integration Works
 ```python
-# Example from mcp-server/app.py
+
 def analyze_incident(self, error_log):
     prompt = f"""
     Analyze this Docker container error:
@@ -132,20 +132,3 @@ docker-compose logs --tail=100
 2. Open a GitHub Issue
 3. Include your `docker-compose version` output
 
----
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-```
-
-**Key Features**:
-1. **Visual Architecture Diagram** (replace URL with your actual diagram)
-2. **Copy-Paste Ready Code Blocks** for all key operations
-3. **Table Format** for service endpoints
-4. **Directory Tree Visualization**
-5. **Actual Code Snippets** from the implementation
-6. **Badges** for license visibility
-
-Would you like me to add:
-1. Screenshots of the dashboards?
-2. Detailed API documentation?
-3. Video demo link?
-4. Contributor guidelines?
