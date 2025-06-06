@@ -1,0 +1,135 @@
+services:
+  app1:
+    build:
+      context: ./apps/app1
+    ports:
+      - "5000:5000"
+    environment:
+      - PROMETHEUS_MULTIPROC_DIR=/tmp
+      - LOGSTASH_HOST=logstash-app1
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    depends_on:
+      - logstash-app1
+
+  app2:
+    build:
+      context: ./apps/app2
+    ports:
+      - "3000:3000"
+    environment:
+      - LOGSTASH_HOST=logstash-app2
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    depends_on:
+      - logstash-app2
+
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+            - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-storage:/var/lib/grafana
+      - F:/ArtificalIntelligence/DevOps-MCP-Server/monitoring/grafana/provisioning:/etc/grafana/provisioning
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD}
+    depends_on:
+      - prometheus
+    restart: unless-stopped
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.14.0
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+      - bootstrap.memory_lock=true
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - "9200:9200"
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    restart: unless-stopped
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.14.0
+    ports:
+      - "5601:5601"
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    depends_on:
+      - elasticsearch
+    restart: unless-stopped
+
+  logstash-app1:
+    image: docker.elastic.co/logstash/logstash:7.14.0
+    volumes:
+      - F:/ArtificalIntelligence/DevOps-MCP-Server/monitoring/logstash/app1/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+    ports:
+      - "5001:5001"
+    environment:
+      - PIPELINE_WORKERS=2
+      - XPACK_MONITORING_ENABLED=false
+    depends_on:
+      - elasticsearch
+    restart: unless-stopped
+
+  logstash-app2:
+    image: docker.elastic.co/logstash/logstash:7.14.0
+    volumes:
+      - F:/ArtificalIntelligence/DevOps-MCP-Server/monitoring/logstash/app2/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+    ports:
+      - "5002:5002"
+    environment:
+      - PIPELINE_WORKERS=2
+      - XPACK_MONITORING_ENABLED=false
+    depends_on:
+      - elasticsearch
+    restart: unless-stopped
+
+  mcp:
+    build:
+      context: ./mcp-server
+      args:
+        - PYTHON_VERSION=3.9
+    ports:
+      - "8000:8000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./mcp-server:/app
+    environment:
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY}
+      - PROMETHEUS_URL=http://prometheus:9090
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+      - LOGSTASH_APP1_URL=logstash-app1:5001
+      - LOGSTASH_APP2_URL=logstash-app2:5002
+    depends_on:
+      - app1
+      - app2
+      - prometheus
+      - elasticsearch
+    restart: unless-stopped
+
+volumes:
+  grafana-storage:
+    driver: local
+  esdata:
+    driver: local

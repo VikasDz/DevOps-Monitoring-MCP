@@ -1,0 +1,12 @@
+services:
+  prometheus:
+    volumes:
+      - prometheus_config:/etc/prometheus
+
+volumes:
+  prometheus_config:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ./monitoring/

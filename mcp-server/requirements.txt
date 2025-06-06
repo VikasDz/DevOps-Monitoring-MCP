@@ -1,0 +1,8 @@
+docker
+kubernetes
+prometheus-api-client
+openai
+slack-sdk
+python-dotenv
+flask
+python-json-logger

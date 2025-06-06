@@ -1,0 +1,3 @@
+flask
+prometheus-client
+python-json-logger

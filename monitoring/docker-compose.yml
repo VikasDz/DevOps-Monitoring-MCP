@@ -1,0 +1,87 @@
+services:
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+  
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-storage:/var/lib/grafana
+    depends_on:
+      - prometheus
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.14.0
+    environment:
+      - discovery.type=single-node
+    ports:
+      - "9200:9200"
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.14.0
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+
+  logstash-app1:
+    image: docker.elastic.co/logstash/logstash:7.14.0
+    volumes:
+      - ./logstash/app1/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+    ports:
+      - "5001:5001"
+    depends_on:
+      - elasticsearch
+    environment:
+      - PIPELINE_WORKERS=2
+
+  logstash-app2:
+    image: docker.elastic.co/logstash/logstash:7.14.0
+    volumes:
+      - ./logstash/app2/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+    ports:
+      - "5002:5002"
+    depends_on:
+      - elasticsearch
+    environment:
+      - PIPELINE_WORKERS=2
+
+volumes:
+  grafana-storage:
+  esdata:
+
+
+
+# services:
+#   prometheus:
+#     image: prom/prometheus
+#     ports:
+#       - "9090:9090"
+#     volumes:
+#       # Use ONE of these options:
+      
+#       # Option 1: Relative path (recommended)
+#       - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      
+#       # Option 2: Windows path with forward slashes
+#       # - F:/ArtificalIntelligence/DevOps-MCP-Server/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      
+#       # Option 3: Docker volume (if others fail)
+#       # - prometheus_config:/etc/prometheus
+#     command:
+#       - '--config.file=/etc/prometheus/prometheus.yml'
+#     restart: unless-stopped
+
+# # Add this ONLY if using Option 3
+# volumes:
+#   prometheus_config:
+#     driver: local

@@ -1,0 +1,13 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: 'app1'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['app1:5000']
+  
+  - job_name: 'app2'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['app2:3000']

@@ -1,0 +1,22 @@
+mcp-project/
+├── apps/
+│   ├── app1/
+│   │   ├── app.py
+│   │   ├── Dockerfile
+│   │   └── requirements.txt
+│   └── app2/
+│       ├── app.js
+│       ├── Dockerfile
+│       └── package.json
+├── monitoring/
+│   ├── docker-compose.yml
+│   ├── prometheus.yml
+│   └── logstash/
+│       ├── app1/
+│       │   └── logstash.conf
+│       └── app2/
+│           └── logstash.conf
+├── mcp-server/
+│   ├── app.py
+│   └── requirements.txt
+└── docker-compose.yml
